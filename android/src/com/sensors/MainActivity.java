@@ -1,8 +1,13 @@
 package com.sensors;
 
+import java.util.List;
+
 import android.app.ListActivity;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,13 +19,29 @@ import android.widget.ListView;
 
 public class MainActivity extends ListActivity {
 
+	//list of sensors retrieved from SensorManager
+	private List<Sensor> sensorList;
+	
+	public final static String SENSOR_TYPE_ID = "com.sensors.SENSOR_TYPE_ID";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	    String[] values = new String[] { "Acceleration & Gravity", "Gyro", "Linear Acceleration", "Rotation Vector"};
+
+	    SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+	    sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
+	    String[] sensorNames = new String[sensorList.size()];
+	    Sensor sensor;
+	    for (int i = 0; i < sensorList.size(); i++)
+	    {
+	    	sensor = sensorList.get(i);
+	    	sensorNames[i] = sensor.getName();
+	    	
+	    }
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-	        android.R.layout.simple_list_item_1, values);
-	    setListAdapter(adapter);
+		        android.R.layout.simple_list_item_1, sensorNames);
+		    setListAdapter(adapter);
+
 	}
 
 	@Override
@@ -31,29 +52,11 @@ public class MainActivity extends ListActivity {
 	}
 
 	@Override
-	public void onListItemClick(ListView list, View view,
-	int position, long id)
+	public void onListItemClick(ListView list, View view, int position, long id)
 	{
-		Intent i;
-		switch(position)
-		{
-			case 0:
-				i = new Intent(MainActivity.this, AccelerationActivity.class);
-				startActivity(i);	
-				break;
-			case 1:
-				i = new Intent(MainActivity.this, GyroActivity.class);
-				startActivity(i);
-				break;
-			case 2:
-				i = new Intent(MainActivity.this, LinearAccelerationActivity.class);
-				startActivity(i);
-				break;
-			case 3:
-				i = new Intent(MainActivity.this, RotationVectorActivity.class);
-				startActivity(i);
-				break;
-		}
-
+		Sensor sensor = sensorList.get(position);
+		Intent i = new Intent(MainActivity.this, DefaultSensorActivity.class);
+		i.putExtra(SENSOR_TYPE_ID, String.valueOf(sensor.getType()));
+		startActivity(i);	
 	}
 }
