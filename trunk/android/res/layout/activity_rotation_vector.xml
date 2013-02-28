@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RotationVectorActivity" 
+    android:gravity="center">
+
+		    <TextView
+			    android:id="@+id/rotation_header"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:textSize="24sp"
+		        android:paddingTop="15dp"
+		        android:paddingBottom="5dp"
+		        android:text="rotation data"/>
+		    <TextView
+		        android:id="@+id/rotation_data"
+		        android:layout_below="@+id/rotation_header"
+		        android:layout_centerHorizontal="true"
+		        android:textSize="20sp"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="No data found" />
+
+</RelativeLayout>
