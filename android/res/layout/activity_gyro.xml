@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GyroActivity" 
+    android:gravity="center">
+
+			<TextView
+			    android:id="@+id/gyro_header"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:textSize="24sp"
+		        android:paddingBottom="5dp"
+		        android:text="Gyro data"/>
+		    <TextView
+		        android:id="@+id/gyro_data"
+		        android:layout_below="@+id/gyro_header"
+		        android:layout_centerHorizontal="true"
+		        android:textSize="20sp"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="No data found" />
+		    <TextView
+		        android:id="@+id/gyro_speed"
+		        android:layout_below="@+id/gyro_data"
+		        android:layout_centerHorizontal="true"
+		        android:textSize="20sp"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="No data found" />
+
+</RelativeLayout>
