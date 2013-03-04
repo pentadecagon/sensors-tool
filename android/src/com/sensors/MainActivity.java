@@ -22,9 +22,9 @@ import android.widget.ListView;
 public class MainActivity extends ListActivity {
 
 	//list of sensors retrieved from SensorManager
-	private ArrayList<Sensor> sensorList;
+	public static ArrayList<Sensor> sensorList;
 	
-	public final static String SENSOR_TYPE_ID = "com.sensors.SENSOR_TYPE_ID";
+	public final static String SENSOR_POSITION_ID = "com.sensors.SENSOR_POSITION_ID";
 	
 	protected class CustomComparator implements Comparator<Sensor> {
 	    @Override
@@ -67,7 +67,7 @@ public class MainActivity extends ListActivity {
 	{
 		Sensor sensor = sensorList.get(position);
 		Intent i = new Intent(MainActivity.this, DefaultSensorActivity.class);
-		i.putExtra(SENSOR_TYPE_ID, String.valueOf(sensor.getType()));
+		i.putExtra(SENSOR_POSITION_ID, String.valueOf(position));
 		startActivity(i);	
 	}
 }
