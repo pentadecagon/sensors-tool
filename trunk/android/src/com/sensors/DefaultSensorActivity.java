@@ -36,13 +36,14 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		SENSOR_TYPE_ID = Integer.parseInt(getIntent().getStringExtra(MainActivity.SENSOR_TYPE_ID));
+		int SENSOR_POSITION_ID = Integer.parseInt(getIntent().getStringExtra(MainActivity.SENSOR_POSITION_ID));
 		
 		setContentView(R.layout.activity_default_sensor);
+
+		sensor = MainActivity.sensorList.get(SENSOR_POSITION_ID);
+		SENSOR_TYPE_ID = sensor.getType();
 		
 		sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-
-		sensor = sensorManager.getDefaultSensor(SENSOR_TYPE_ID);
 
 		((TextView) findViewById(R.id.sensor_name)).setText(sensor.getName());
 		
