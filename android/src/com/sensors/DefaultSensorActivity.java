@@ -88,7 +88,7 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 		details += ", maxRange="+sensor.getMaximumRange();
 		details += ", resolution="+sensor.getResolution();
 		details += ", power="+sensor.getPower();
-		details += ", minDelay="+sensor.getMinDelay();
+		details += ", minDelay="+sensor.getMinDelay();  // exists only for API>=9
 		return details;
 
 	}
@@ -101,34 +101,34 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 			case Sensor.TYPE_ACCELEROMETER:
 			case Sensor.TYPE_GRAVITY:
 			case Sensor.TYPE_LINEAR_ACCELERATION:
-				header += "/ m/s^2";
+				header += " (m/s²)";
 				break;
 			case Sensor.TYPE_AMBIENT_TEMPERATURE:
-				header += "/ degrees Celcius";
+				header += " (°C)";
 				break;
 			case Sensor.TYPE_GYROSCOPE:
-				header += "/ radians/sec";
+				header += " (rad/s)";
 				break;
 			case Sensor.TYPE_LIGHT:
-				header += "/ SI lux";
+				header += " (lux)";
 				break;
 			case Sensor.TYPE_MAGNETIC_FIELD:
-				header += "/ uT";
+				header += " (μT)";
 				break;
 			case Sensor.TYPE_ORIENTATION:
-				header += "/ degrees";
+				header += " (degrees)";
 				break;
 			case Sensor.TYPE_PRESSURE:
-				header += "/ hPa (millibar)";
+				header += " (hPa)";
 				break;
 			case Sensor.TYPE_PROXIMITY:
-				header += "/ cm";
+				header += " (cm)";
 				break;
 			case Sensor.TYPE_RELATIVE_HUMIDITY:
-				header += "/ %";
+				header += " (%)";
 				break;
 			case Sensor.TYPE_ROTATION_VECTOR:
-				header += " (unitless)";
+				header += ""; // unitless
 				break;
 			default:
 				//do nothing
