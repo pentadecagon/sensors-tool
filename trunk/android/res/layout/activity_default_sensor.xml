@@ -33,13 +33,74 @@
 		        android:paddingTop="20dp"
 		        android:paddingBottom="5dp"
 		        android:text="Sensor data"/>
-		    <TextView
-		        android:id="@+id/sensor_data"
-		        android:layout_below="@+id/sensor_data_header"
-		        android:layout_centerHorizontal="true"
-		        android:textSize="20sp"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="No data found" />
-
+			
+			<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:id="@+id/tableLayout1"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_below="@+id/sensor_data_header" >
+			    <TableRow
+			        android:id="@+id/table_row_x"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:padding="5dip" >
+						<TextView
+					        android:id="@+id/sensor_x"
+					        android:textSize="20sp"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:text="x" />
+					    <TextView
+					        android:id="@+id/sensor_data_x"
+					        android:textSize="20sp"
+							android:width="180dp"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:gravity="right"
+					        android:text="No data found" />
+				</TableRow>
+				<TableRow
+			        android:id="@+id/table_row_y"
+			        android:visibility="gone"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:padding="5dip" >
+					    <TextView
+					        android:id="@+id/sensor_y"
+					        android:textSize="20sp"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:text="y" />
+					    <TextView
+					        android:id="@+id/sensor_data_y"
+					        android:textSize="20sp"
+					        android:width="180dp"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:gravity="right"
+					        android:text="No data found" />
+				</TableRow>
+				<TableRow
+			        android:id="@+id/table_row_z"
+			        android:visibility="gone"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:padding="5dip" >
+					    <TextView
+					        android:id="@+id/sensor_z"
+					        android:textSize="20sp"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:text="z" />
+					    <TextView
+					        android:id="@+id/sensor_data_z"
+					        android:textSize="20sp"
+							android:width="180dp"      
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:gravity="right"
+					        android:text="No data found" />
+				</TableRow>
+			</TableLayout>
 </RelativeLayout>
