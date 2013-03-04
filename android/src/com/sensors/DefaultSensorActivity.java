@@ -1,5 +1,7 @@
 package com.sensors;
 
+import java.text.DecimalFormat;
+
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -7,6 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -15,15 +18,19 @@ import android.widget.TextView;
 
 public class DefaultSensorActivity extends Activity implements SensorEventListener {
 
-	float[] dataReadFromSensor = new float[3];
+	float[] dataReadFromSensor;
 
 	SensorManager sensorManager;
 
 	private Sensor sensor;
 
-	TextView sensorDataView;
+	TextView sensorDataViewX, sensorDataViewY, sensorDataViewZ;
 	
 	private int SENSOR_TYPE_ID;
+	
+	private int dimensions = 3;
+	
+	DecimalFormat df = new DecimalFormat("0.00000");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +44,102 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 
 		sensor = sensorManager.getDefaultSensor(SENSOR_TYPE_ID);
 
-		TextView sensorNameView = (TextView) findViewById(R.id.sensor_name);
-		sensorNameView.setText(sensor.getName());
+		((TextView) findViewById(R.id.sensor_name)).setText(sensor.getName());
 		
-		TextView sensorDetailsView = (TextView) findViewById(R.id.sensor_details);
-		String detailsText = sensor.toString();
-		sensorDetailsView.setText(detailsText);
+		((TextView) findViewById(R.id.sensor_details)).setText(formatSensorDetails());
+
+		((TextView) findViewById(R.id.sensor_data_header)).setText(formatSensorDataHeader());
 		
-		sensorDataView = (TextView) findViewById(R.id.sensor_data);
+		dimensions = getNumberOfDimensions();
+		dataReadFromSensor = new float[dimensions];
+		
+		sensorDataViewX = (TextView) findViewById(R.id.sensor_data_x);
+		if (dimensions > 1)
+		{
+			findViewById(R.id.table_row_y).setVisibility(View.VISIBLE);
+			findViewById(R.id.table_row_z).setVisibility(View.VISIBLE);
+			sensorDataViewY = (TextView) findViewById(R.id.sensor_data_y);
+			sensorDataViewZ = (TextView) findViewById(R.id.sensor_data_z);
+		}
+	
 	}
 
+	protected int getNumberOfDimensions()
+	{
+		switch(SENSOR_TYPE_ID)
+		{
+			case Sensor.TYPE_LIGHT:
+			case Sensor.TYPE_PRESSURE:
+			case Sensor.TYPE_PROXIMITY:
+			case Sensor.TYPE_RELATIVE_HUMIDITY:
+			case Sensor.TYPE_AMBIENT_TEMPERATURE:
+				return 1;
+			default:
+				return 3;
+		}
+	}
+	
+	protected String formatSensorDetails()
+	{
+		String details = "vendor=\""+sensor.getVendor();
+		details += "\", version="+sensor.getVersion();
+		details += ", type ID="+sensor.getType();
+		details += ", maxRange="+sensor.getMaximumRange();
+		details += ", resolution="+sensor.getResolution();
+		details += ", power="+sensor.getPower();
+		details += ", minDelay="+sensor.getMinDelay();
+		return details;
+
+	}
+
+	protected String formatSensorDataHeader()
+	{
+		String header = "Sensor data";
+		switch(SENSOR_TYPE_ID)
+		{
+			case Sensor.TYPE_ACCELEROMETER:
+			case Sensor.TYPE_GRAVITY:
+			case Sensor.TYPE_LINEAR_ACCELERATION:
+				header += "/ m/s^2";
+				break;
+			case Sensor.TYPE_AMBIENT_TEMPERATURE:
+				header += "/ degrees Celcius";
+				break;
+			case Sensor.TYPE_GYROSCOPE:
+				header += "/ radians/sec";
+				break;
+			case Sensor.TYPE_LIGHT:
+				header += "/ SI lux";
+				break;
+			case Sensor.TYPE_MAGNETIC_FIELD:
+				header += "/ uT";
+				break;
+			case Sensor.TYPE_ORIENTATION:
+				header += "/ degrees";
+				break;
+			case Sensor.TYPE_PRESSURE:
+				header += "/ hPa (millibar)";
+				break;
+			case Sensor.TYPE_PROXIMITY:
+				header += "/ cm";
+				break;
+			case Sensor.TYPE_RELATIVE_HUMIDITY:
+				header += "/ %";
+				break;
+			case Sensor.TYPE_ROTATION_VECTOR:
+				header += " (unitless)";
+				break;
+			default:
+				//do nothing
+		}
+		return header;
+	}
+	
 	public void onSensorChanged(SensorEvent event) {
 
 		if (event.sensor.getType() == SENSOR_TYPE_ID)
 		{
-			System.arraycopy(event.values, 0, dataReadFromSensor, 0, 3);
+			System.arraycopy(event.values, 0, dataReadFromSensor, 0, dimensions);
 		} else
 		{
 			Log.d("sensor", "onSensorChanged: unidentified sensor type!");
@@ -64,28 +152,26 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	protected void displaySensorData()
 	{
 		//display sensor data
-		String dataText;
+		String dataX = "No data found", dataY = "No data found", dataZ = "No data found";
 		if (dataReadFromSensor != null) {
-			switch(SENSOR_TYPE_ID)
+			dataX = df.format(dataReadFromSensor[0]);
+			if (dimensions > 1)
 			{
-				case Sensor.TYPE_LIGHT:
-				case Sensor.TYPE_PRESSURE:
-				case Sensor.TYPE_PROXIMITY:
-				case Sensor.TYPE_RELATIVE_HUMIDITY:
-				case Sensor.TYPE_AMBIENT_TEMPERATURE:
-					dataText = ""+dataReadFromSensor[0];
-					break;
-				default:
-					dataText = "x:   " + dataReadFromSensor[0]
-						+ "\ny:   " + dataReadFromSensor[1]
-						+ "\nz:   " + dataReadFromSensor[2];	
+				dataY = df.format(dataReadFromSensor[1]);
+				dataZ = df.format(dataReadFromSensor[2]);
 			}
+		}
+		
+		sensorDataViewX.setText(dataX);
+		if (dimensions > 1)
+		{
+			sensorDataViewY.setText(dataY);
+			sensorDataViewZ.setText(dataZ);
+			Log.d("sensor", "displaySensorData: "+sensor.getName()+":\nx: "+dataX+"\ny: "+dataY+"\nz: "+dataZ);
 		} else
 		{
-			dataText = "could not find data from "+sensor.getName()+" sensor";
+			Log.d("sensor", "displaySensorData: "+sensor.getName()+": "+dataX);
 		}
-		sensorDataView.setText(dataText);
-		Log.d("sensor", "displaySensorData: "+sensor.getName()+":\n"+dataText);
 	}
 
 	@Override

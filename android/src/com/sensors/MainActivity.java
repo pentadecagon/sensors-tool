@@ -1,5 +1,8 @@
 package com.sensors;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.ListActivity;
@@ -7,7 +10,6 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,22 +22,31 @@ import android.widget.ListView;
 public class MainActivity extends ListActivity {
 
 	//list of sensors retrieved from SensorManager
-	private List<Sensor> sensorList;
+	private ArrayList<Sensor> sensorList;
 	
 	public final static String SENSOR_TYPE_ID = "com.sensors.SENSOR_TYPE_ID";
+	
+	protected class CustomComparator implements Comparator<Sensor> {
+	    @Override
+	    public int compare(Sensor s1, Sensor s2) {
+	    	return (s1.getType() - s2.getType());
+	    }
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 	    SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-	    sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
+	    List<Sensor> sensorListOrig = sensorManager.getSensorList(Sensor.TYPE_ALL);
+	    sensorList = new ArrayList<Sensor>(sensorListOrig);
+	    Collections.sort(sensorList, new CustomComparator());
 	    String[] sensorNames = new String[sensorList.size()];
 	    Sensor sensor;
 	    for (int i = 0; i < sensorList.size(); i++)
 	    {
 	    	sensor = sensorList.get(i);
-	    	sensorNames[i] = sensor.getName();
+	    	sensorNames[i] = sensor.getName() + " ("+sensor.getType()+")";
 	    	
 	    }
 	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
