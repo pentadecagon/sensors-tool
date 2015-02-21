@@ -1,16 +1,19 @@
 package com.sensors;
 
-import java.text.DecimalFormat;
-
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
 
 /**
  * Displays data from the sensor whose type is input by SENSOR_ID
@@ -19,7 +22,7 @@ import android.widget.TextView;
 public class DefaultSensorActivity extends Activity implements SensorEventListener {
 
 	float[] dataReadFromSensor;
-
+    GLRenderer glRenderer;
 	SensorManager sensorManager;
 
 	private Sensor sensor;
@@ -38,8 +41,10 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 		
 		int SENSOR_POSITION_ID = Integer.parseInt(getIntent().getStringExtra(MainActivity.SENSOR_POSITION_ID));
 		
-		setContentView(R.layout.activity_default_sensor);
-
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_default_sensor);
 		sensor = MainActivity.sensorList.get(SENSOR_POSITION_ID);
 		SENSOR_TYPE_ID = sensor.getType();
 		
@@ -50,6 +55,11 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 		((TextView) findViewById(R.id.sensor_details)).setText(formatSensorDetails());
 
 		((TextView) findViewById(R.id.sensor_data_header)).setText(formatSensorDataHeader());
+
+        GLSurfaceView glView = (GLSurfaceView) findViewById(R.id.surfaceView);
+        glView.setEGLContextClientVersion(3);
+        glRenderer = new GLRenderer(this);
+        glView.setRenderer(glRenderer);
 		
 		dimensions = getNumberOfDimensions();
 		dataReadFromSensor = new float[dimensions];
@@ -141,6 +151,7 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 		if (event.sensor.getType() == SENSOR_TYPE_ID)
 		{
 			System.arraycopy(event.values, 0, dataReadFromSensor, 0, dimensions);
+            glRenderer.setSensor(event.values[0], event.values[1], event.values[2]);
 		} else
 		{
 			Log.d("sensor", "onSensorChanged: unidentified sensor type!");
@@ -179,7 +190,7 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	protected void onResume() {
 		super.onResume();
 
-	    sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+	    sensorManager.registerListener(this, sensor, 16000);
 	}
 
 	@Override

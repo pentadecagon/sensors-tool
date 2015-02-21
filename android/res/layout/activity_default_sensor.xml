@@ -1,23 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center">
 
 			<TextView
 			    android:id="@+id/sensor_name"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_centerHorizontal="true"
 		        android:textSize="24sp"
 		        android:paddingBottom="0dp"
 		        android:text=""/>
 			<TextView
 			    android:id="@+id/sensor_details"
-			    android:layout_below="@+id/sensor_name"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_centerHorizontal="true"
 		        android:textSize="15sp"
 		        android:paddingLeft="20dp"
 		        android:paddingRight="20dp"
@@ -25,10 +23,8 @@
 		        android:text=""/>
 			<TextView
 			    android:id="@+id/sensor_data_header"
-			    android:layout_below="@+id/sensor_details"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_centerHorizontal="true"
 		        android:textSize="24sp"
 		        android:paddingTop="20dp"
 		        android:paddingBottom="5dp"
@@ -37,9 +33,7 @@
 			<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 			    android:id="@+id/tableLayout1"
 			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_centerHorizontal="true"
-			    android:layout_below="@+id/sensor_data_header" >
+			    android:layout_height="wrap_content">
 			    <TableRow
 			        android:id="@+id/table_row_x"
 			        android:layout_width="wrap_content"
@@ -103,4 +97,10 @@
 					        android:text="No data found" />
 				</TableRow>
 			</TableLayout>
-</RelativeLayout>
+
+    <android.opengl.GLSurfaceView
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:id="@+id/surfaceView"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
