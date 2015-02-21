@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -35,6 +36,15 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	
 	DecimalFormat df = new DecimalFormat("0.00000");
 
+    private boolean checkFor3d(int sensor_type) {
+        int [] good = new int[]{1, 2, 3, 9, 10, 14};
+        for (int a : good) {
+            if (a == sensor_type)
+                return true;
+        }
+        return false;
+    }
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,10 +66,15 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 
 		((TextView) findViewById(R.id.sensor_data_header)).setText(formatSensorDataHeader());
 
+
         GLSurfaceView glView = (GLSurfaceView) findViewById(R.id.surfaceView);
-        glView.setEGLContextClientVersion(3);
-        glRenderer = new GLRenderer(this);
-        glView.setRenderer(glRenderer);
+        if (checkFor3d(SENSOR_TYPE_ID)) {
+            glView.setEGLContextClientVersion(3);
+            glRenderer = new GLRenderer(this);
+            glView.setRenderer(glRenderer);
+        } else {
+            ((LinearLayout)glView.getParent()).removeView(glView);
+        }
 		
 		dimensions = getNumberOfDimensions();
 		dataReadFromSensor = new float[dimensions];
@@ -151,7 +166,8 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 		if (event.sensor.getType() == SENSOR_TYPE_ID)
 		{
 			System.arraycopy(event.values, 0, dataReadFromSensor, 0, dimensions);
-            glRenderer.setSensor(event.values[0], event.values[1], event.values[2]);
+            if (glRenderer != null)
+                glRenderer.setSensor(event.values[0], event.values[1], event.values[2]);
 		} else
 		{
 			Log.d("sensor", "onSensorChanged: unidentified sensor type!");
