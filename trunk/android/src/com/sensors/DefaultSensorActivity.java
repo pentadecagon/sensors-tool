@@ -35,7 +35,7 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	DecimalFormat df = new DecimalFormat("0.00000");
 
     private boolean checkFor3d(int sensor_type) {
-        int [] good = new int[]{1, 2, 3, 9, 10, 11, 14, 15, 20};
+        int [] good = new int[]{1, 2, 9, 10, 11, 14, 15, 20};
         for (int a : good) {
             if (a == sensor_type)
                 return true;
