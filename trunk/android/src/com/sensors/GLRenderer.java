@@ -1,46 +1,9 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2013 Dan Ginsburg, Budirijanto Purnomo
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-//
-// Book:      OpenGL(R) ES 3.0 Programming Guide, 2nd Edition
-// Authors:   Dan Ginsburg, Budirijanto Purnomo, Dave Shreiner, Aaftab Munshi
-// ISBN-10:   0-321-93388-5
-// ISBN-13:   978-0-321-93388-1
-// Publisher: Addison-Wesley Professional
-// URLs:      http://www.opengles-book.com
-//            http://my.safaribooksonline.com/book/animation-and-3d/9780133440133
-//
-
-// Simple_VertexShader
-//
-//    This is a simple example that draws a rotating cube in perspective
-//    using a vertex shader to transform the object
-//
-
 package com.sensors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
@@ -53,12 +16,14 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GLRenderer implements GLSurfaceView.Renderer {
     private final Context context;
+    private final int sensorType;
 
     ///
     // Constructor
     //
-    public GLRenderer(Context context) {
+    public GLRenderer(Context context, int sensorType) {
         this.context = context;
+        this.sensorType = sensorType;
     }
 
     ///
@@ -89,24 +54,24 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     }
 
     private ESTransform rotMatrix() {
-
-        final float angle = (float) Math.atan2(-sy, sx);
-        final float angle2 = (float) Math.atan2(-sz, Math.hypot(sx, sy));
-
-        // Generate a perspective matrix with a 60 degree FOV
-//      perspective.matrixLoadIdentity();
-
-
         ESTransform rot = new ESTransform();
         rot.matrixLoadIdentity();
-        rot.rotate(angle2, sy, -sx, 0);
-        rot.rotate(angle, 0.0f, 0.0f, 1.0f);
-        return rot;
-    }
+        if (sensorType == Sensor.TYPE_ROTATION_VECTOR
+                || sensorType == Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR
+                || sensorType == Sensor.TYPE_GAME_ROTATION_VECTOR) {
+            double sin2 = Math.sqrt(sx * sx + sy * sy + sz * sz);
+            double ang = Math.asin(sin2) * 2.0;
+            rot.rotate((float)ang, sx, sy, sz);
+            rot.rotate((float)Math.PI/2, 0, 0, 1);
+        } else {
+            final float angle = (float) Math.atan2(-sy, sx);
+            final float angle2 = (float) Math.atan2(-sz, Math.hypot(sx, sy));
 
-    ///
-    // Draw a triangle using the shader pair created in onSurfaceCreated()
-    //
+            rot.rotate(angle2, sy, -sx, 0);
+            rot.rotate(angle, 0.0f, 0.0f, 1.0f);
+        }
+         return rot;
+    }
 
     void initTexture() {
         GLES30.glActiveTexture ( GLES30.GL_TEXTURE0 );
@@ -156,9 +121,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES30.glUniformMatrix4fv(rotLoc, 1, false, rot.getAsFloatBuffer());
     }
 
-    ///
-    // Handle surface changes
-    //
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         mWidth = width;
         mHeight = height;
