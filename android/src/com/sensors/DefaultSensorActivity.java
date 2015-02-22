@@ -31,13 +31,11 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	TextView sensorDataViewX, sensorDataViewY, sensorDataViewZ;
 	
 	private int SENSOR_TYPE_ID;
-	
-	private int dimensions = 3;
-	
+
 	DecimalFormat df = new DecimalFormat("0.00000");
 
     private boolean checkFor3d(int sensor_type) {
-        int [] good = new int[]{1, 2, 3, 9, 10, 14};
+        int [] good = new int[]{1, 2, 3, 9, 10, 11, 14, 15, 20};
         for (int a : good) {
             if (a == sensor_type)
                 return true;
@@ -70,41 +68,17 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
         GLSurfaceView glView = (GLSurfaceView) findViewById(R.id.surfaceView);
         if (checkFor3d(SENSOR_TYPE_ID)) {
             glView.setEGLContextClientVersion(3);
-            glRenderer = new GLRenderer(this);
+            glRenderer = new GLRenderer(this, SENSOR_TYPE_ID);
             glView.setRenderer(glRenderer);
         } else {
             ((LinearLayout)glView.getParent()).removeView(glView);
         }
 		
-		dimensions = getNumberOfDimensions();
-		dataReadFromSensor = new float[dimensions];
-		
 		sensorDataViewX = (TextView) findViewById(R.id.sensor_data_x);
-		if (dimensions > 1)
-		{
-			findViewById(R.id.table_row_y).setVisibility(View.VISIBLE);
-			findViewById(R.id.table_row_z).setVisibility(View.VISIBLE);
-			sensorDataViewY = (TextView) findViewById(R.id.sensor_data_y);
-			sensorDataViewZ = (TextView) findViewById(R.id.sensor_data_z);
-		}
-	
+        sensorDataViewY = (TextView) findViewById(R.id.sensor_data_y);
+        sensorDataViewZ = (TextView) findViewById(R.id.sensor_data_z);
 	}
 
-	protected int getNumberOfDimensions()
-	{
-		switch(SENSOR_TYPE_ID)
-		{
-			case Sensor.TYPE_LIGHT:
-			case Sensor.TYPE_PRESSURE:
-			case Sensor.TYPE_PROXIMITY:
-			case Sensor.TYPE_RELATIVE_HUMIDITY:
-			case Sensor.TYPE_AMBIENT_TEMPERATURE:
-				return 1;
-			default:
-				return 3;
-		}
-	}
-	
 	protected String formatSensorDetails()
 	{
 		String details = "vendor=\""+sensor.getVendor();
@@ -165,7 +139,7 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 
 		if (event.sensor.getType() == SENSOR_TYPE_ID)
 		{
-			System.arraycopy(event.values, 0, dataReadFromSensor, 0, dimensions);
+			dataReadFromSensor = event.values.clone();
             if (glRenderer != null)
                 glRenderer.setSensor(event.values[0], event.values[1], event.values[2]);
 		} else
@@ -176,29 +150,25 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 		displaySensorData();
 
 	}
-	
+	private boolean invisible = true;
+
 	protected void displaySensorData()
 	{
-		//display sensor data
-		String dataX = "No data found", dataY = "No data found", dataZ = "No data found";
 		if (dataReadFromSensor != null) {
-			dataX = df.format(dataReadFromSensor[0]);
-			if (dimensions > 1)
+			String dataX = df.format(dataReadFromSensor[0]);
+            sensorDataViewX.setText(dataX);
+			if (dataReadFromSensor.length > 1)
 			{
-				dataY = df.format(dataReadFromSensor[1]);
-				dataZ = df.format(dataReadFromSensor[2]);
+				String dataY = df.format(dataReadFromSensor[1]);
+				String dataZ = df.format(dataReadFromSensor[2]);
+                if (invisible) {
+                    findViewById(R.id.table_row_y).setVisibility(View.VISIBLE);
+                    findViewById(R.id.table_row_z).setVisibility(View.VISIBLE);
+                    invisible = false;
+                }
+                sensorDataViewY.setText(dataY);
+                sensorDataViewZ.setText(dataZ);
 			}
-		}
-		
-		sensorDataViewX.setText(dataX);
-		if (dimensions > 1)
-		{
-			sensorDataViewY.setText(dataY);
-			sensorDataViewZ.setText(dataZ);
-			Log.d("sensor", "displaySensorData: "+sensor.getName()+":\nx: "+dataX+"\ny: "+dataY+"\nz: "+dataZ);
-		} else
-		{
-			Log.d("sensor", "displaySensorData: "+sensor.getName()+": "+dataX);
 		}
 	}
 
