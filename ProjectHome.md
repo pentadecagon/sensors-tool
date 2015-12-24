@@ -1,0 +1,1 @@
+displays list of sensors & output from those sensors
