@@ -1,4 +1,4 @@
-package com.sensors;
+package de.karbid.sensors;
 
 import android.content.Context;
 import android.graphics.Bitmap;

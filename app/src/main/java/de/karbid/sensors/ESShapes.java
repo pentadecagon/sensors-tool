@@ -35,7 +35,7 @@
 //    Utility class for generating shapes
 //
 
-package com.sensors;
+package de.karbid.sensors;
 
 import junit.framework.Assert;
 

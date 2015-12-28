@@ -1,4 +1,4 @@
-package com.sensors;
+package de.karbid.sensors;
 
 import android.app.Activity;
 import android.hardware.Sensor;
@@ -176,7 +176,7 @@ public class DefaultSensorActivity extends Activity implements SensorEventListen
 	protected void onResume() {
 		super.onResume();
 
-	    sensorManager.registerListener(this, sensor, 16000);
+	    sensorManager.registerListener(this, sensor, 33000);
 	}
 
 	@Override

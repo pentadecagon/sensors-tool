@@ -35,7 +35,7 @@
 //    Utility class for handling transformations
 //
 
-package com.sensors;
+package de.karbid.sensors;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

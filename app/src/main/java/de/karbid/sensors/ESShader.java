@@ -35,7 +35,7 @@
 //    Utility functions for loading GLSL ES 3.0 shaders and creating program objects.
 //
 
-package com.sensors;
+package de.karbid.sensors;
 
 import android.content.Context;
 import android.opengl.GLES30;

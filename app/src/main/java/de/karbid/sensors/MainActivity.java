@@ -1,9 +1,4 @@
-package com.sensors;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+package de.karbid.sensors;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -15,6 +10,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * Displays a list of sensors that user can click on to see the data from that sensor
  */
@@ -24,7 +24,7 @@ public class MainActivity extends ListActivity {
 	//list of sensors retrieved from SensorManager
 	public static ArrayList<Sensor> sensorList;
 	
-	public final static String SENSOR_POSITION_ID = "com.sensors.SENSOR_POSITION_ID";
+	public final static String SENSOR_POSITION_ID = "de.karbid.sensors.SENSOR_POSITION_ID";
 	
 	protected class CustomComparator implements Comparator<Sensor> {
 	    @Override
@@ -58,7 +58,7 @@ public class MainActivity extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+//		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
 
