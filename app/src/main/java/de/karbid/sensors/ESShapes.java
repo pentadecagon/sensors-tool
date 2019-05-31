@@ -37,7 +37,7 @@
 
 package de.karbid.sensors;
 
-import junit.framework.Assert;
+//import junit.framework.Assert;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -156,7 +156,7 @@ public class ESShapes
                 mTexCoords.put((float)a10);
             }
         }
-        Assert.assertEquals(mVertices.position(), numVertices*3);
+//        Assert.assertEquals(mVertices.position(), numVertices*3);
         final int numIndices = 2 * numVertices + 2;
         mIndices = ByteBuffer.allocateDirect ( numIndices * 2 )
                 .order ( ByteOrder.nativeOrder() ).asShortBuffer();
@@ -166,7 +166,7 @@ public class ESShapes
         }
         mIndices.put((short)0);
         mIndices.put(n2);
-        Assert.assertEquals(numIndices, mIndices.position());
+//        Assert.assertEquals(numIndices, mIndices.position());
         mNumIndices = numIndices;
         mVertices.position(0);
         mNormals.position(0);
@@ -198,8 +198,8 @@ public class ESShapes
                 }
             }
         }
-        Assert.assertEquals(mNormals.position(), numVertices * 3);
-        Assert.assertEquals(mVertices.position(), numVertices * 3);
+//        Assert.assertEquals(mNormals.position(), numVertices * 3);
+//        Assert.assertEquals(mVertices.position(), numVertices * 3);
         mNormals.position(0);
         mVertices.position(0);
         return -1;
